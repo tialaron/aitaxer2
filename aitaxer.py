@@ -7,11 +7,11 @@ import plotly.express as px
 import graph_plot
 from PIL import Image
 
-image_title = Image.open('C:\\PycharmProjects\\aitaxer3\\venv\\images\\picture_title.jpg')
-image_pipe  = Image.open('C:\\PycharmProjects\\aitaxer3\\venv\\images\\pipeline_aitax.png')
-image_world = Image.open('C:\\PycharmProjects\\aitaxer3\\venv\\images\\picture_world.jpg')
-image_envir = Image.open('C:\\PycharmProjects\\aitaxer3\\venv\\images\\picture_env.jpg')
-image_bot   = Image.open('C:\\PycharmProjects\\aitaxer3\\venv\\images\\picture_bot.jpg')
+image_title = Image.open('H:\\Pythonprojects\\aitax\\venv\\images\\picture_title.jpg')
+image_pipe  = Image.open('H:\\Pythonprojects\\aitax\\venv\\images\\pipeline_aitax.png')
+image_world = Image.open('H:\\Pythonprojects\\aitax\\venv\\images\\picture_world.jpg')
+image_envir = Image.open('H:\\Pythonprojects\\aitax\\venv\\images\\picture_env.jpg')
+image_bot   = Image.open('H:\\Pythonprojects\\aitax\\venv\\images\\picture_bot.jpg')
 # Pie chart, where the slices will be ordered and plotted counter-clockwise:
 st.header('Искусственный Интеллект для рсчета налоговых отчислений.')
 st.image(image_title)
@@ -98,7 +98,7 @@ st.write('')
 st.header('Модель "Свободный рынок" (Free market) ',anchor='free')
 st.write('Данная модель характеризуется тем, что налога здесь как такового нет. Боты получают вознаграждение от среды и просто его накапливают. С течением времени наиболее эффективный бот создает наибольший рост собственного благосостояния, а остальные боты перестают активно участвовать в экономике.')
 #########Запуск симуляции#######
-number1 = 20
+number1 = 50
 col11,col12,col13,col14 = st.columns(4)
 with col11:
     ef1 = st.slider('Эффективность 1 бота',0,100,25)
@@ -118,6 +118,7 @@ if but_start:
     #placeholder = st.empty()
 
     data_line = pd.DataFrame({'iter': 0, '1 Бот':10,'2 Бот':10,'Бот 3':10,'Бот 4':10},index=[0])
+
     for i in range(number1):
         with placeholder.container():
             col1, col2, col3 = st.columns(3)
@@ -129,27 +130,78 @@ if but_start:
                 data_all = pd.DataFrame({'№': [1, 2, 3, 4], 'Выручка': [bot1[1], bot2[1], bot3[1], bot4[1]], 'Доля,%':[dolii[0],dolii[1],dolii[2],dolii[3]]})
                 st.write(data_all)
             with col3:
-                st.write('Важно!')
+                st.write('Рост благосостояния ботов.')
                 data_curr = pd.DataFrame({'iter':i,'1 Бот':bot1[1],'2 Бот':bot2[1],'Бот 3':bot3[1],'Бот 4':bot4[1]},index=[0])
                 data_line = pd.concat([data_line,data_curr])
-                st.line_chart(data_line)
+                data_line.to_csv('saved_data.csv',index=False)
+                read_datas = pd.read_csv('saved_data.csv')
+                st.line_chart(read_datas)
         bot1[1] += bot1[0]
         bot2[1] += bot2[0]
         bot3[1] += bot3[0]
         bot4[1] += bot4[0]
         #placeholder.empty()
-
-
-st.write('Похожая ситуация в реальной жизни опасна тем, что она формирует монополию. И при этом рынок теряет большую часть агентов, а монополист начинает диктовать условия выгодные ему. '
+st.write('Как видим, наиболее эффективный бот быстро наращивает свое благосостояние и в итоге остается практически один на рынке.')
+st.write('Похожая ситуация в реальной жизни опасна тем, что она формирует монополию. И при этом рынок теряет большую часть агентов, а монополист начинает диктовать клиентам условия выгодные ему. '
          'Поскольку любая фирма (ООО или ОАО) имеет в уставных документах пункт о том, что целью ее создания является извлечение прибыли по другому она не в состоянии действовать.')
 #st.image(image_free1, caption='Доли благосостояния ботов в общей модели экономики. Отчетливо видно, что один (наиболее эффективный) бот аккумулирует большую часть всего благосостояния.')
 
 #_________________________Модель Федеральная налоговая служба США____________
 st.header('Модель "Федеральная налоговая служба США" (Federal USA)', anchor='usa')
 st.write('В данной модели расчета налога имеется прогрессивная шкала начисления налога в зависимости от доходности бота.')
-st.write('Имеется несколько уровней: 10%, 12%, 22%, 24%, 32%, 35% and 37%. Каждый уровень отчислений соответствует определенной градации дохода.')
-st.write('Например, налог в 10% взымается с предприятий имеющих доход 0 - 9,950$ в год.')
+st.write('Имеется несколько уровней: 10%, 12%, 22%, 24%, 32%, 35% and 37%. Каждый уровень отчислений соответствует определенной градации дохода. Которые в свою очередь имеют такие значения:'
+         '0 - 9,950 $;'
+         '9,951 - 40,525 $;'
+         '40,526 - 86,375 $;'
+         '86,376 - 164,925 $;'
+         '164,926 - 209,425 $;'
+         '209,426 - 523,600 $;'
+         '523,601 $ + ')
+st.write('Здесь указаны довольно условные границы. Более точные данные можно посмотреть на этом [сайте](https://www.nerdwallet.com/article/taxes/federal-income-tax-brackets). В данной системе несколько шкал, но в нашей системе будем рассматривать только одну.')
+st.write('Например, налог в 10% взымается с лиц имеющих доход 0 - 9,950$ в год. Немного изменим границы для наших ботов, чтобы было проще считать. Пусть доход бота от 0 до 99,5 условных монет будет облагаться налогом 10%.')
+#########Запуск симуляции#######
+number1 = 50
+col11,col12,col13,col14 = st.columns(4)
+with col11:
+    ef1 = st.slider('Эффективность 1 бота',0,100,25)
+with col12:
+    ef2 = st.slider('Эффективность 2 бота',0,100,10)
+with col13:
+    ef3 = st.slider('Эффективность 3 бота',0,100,5)
+with col14:
+    ef4 = st.slider('Эффективность 4 бота',0,100,1)
+but_start = st.button('Запустить симуляцию')
+placeholder = st.empty()
+if but_start:
+    bot1 = [ef1, 10]
+    bot2 = [ef2, 10]
+    bot3 = [ef3, 10]
+    bot4 = [ef4, 10]
+    #placeholder = st.empty()
 
+    data_line = pd.DataFrame({'iter': 0, '1 Бот':10,'2 Бот':10,'Бот 3':10,'Бот 4':10},index=[0])
+
+    for i in range(number1):
+        with placeholder.container():
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                graph_plot.graph_pie(bot1[1], bot2[1], bot3[1], bot4[1])
+            with col2:
+                summar1 = bot1[1] + bot2[1] + bot3[1] + bot4[1]
+                dolii = [bot1[1]*100/summar1,bot2[1]*100/summar1,bot3[1]*100/summar1,bot4[1]*100/summar1]
+                data_all = pd.DataFrame({'№': [1, 2, 3, 4], 'Выручка': [bot1[1], bot2[1], bot3[1], bot4[1]], 'Доля,%':[dolii[0],dolii[1],dolii[2],dolii[3]]})
+                st.write(data_all)
+            with col3:
+                st.write('Рост благосостояния ботов.')
+                data_curr = pd.DataFrame({'iter':i,'1 Бот':bot1[1],'2 Бот':bot2[1],'Бот 3':bot3[1],'Бот 4':bot4[1]},index=[0])
+                data_line = pd.concat([data_line,data_curr])
+                data_line.to_csv('saved_data.csv',index=False)
+                read_datas = pd.read_csv('saved_data.csv')
+                st.line_chart(read_datas)
+        bot1[1] += bot1[0]
+        bot2[1] += bot2[0]
+        bot3[1] += bot3[0]
+        bot4[1] += bot4[0]
 #_________________________Модель Формула Саеза_______________________________
 st.header('Модель Эммануэля Саеза (Emmanuel Saez)', anchor='saez')
 
@@ -216,16 +268,3 @@ if but_start:
                         bot2[1] = bot2[1] + bot2[0]
                         bot3[1] = bot3[1] + bot3[0]
                         bot4[1] = bot4[1] + bot4[0]
-
-        #graph_plot.graph_pie(bot1[1],bot2[1],bot3[1],bot4[1])
-
-
-
-
-import time
-
-with st.empty():
-     for seconds in range(60):
-         st.write(f"⏳ {seconds} seconds have passed")
-         time.sleep(1)
-     st.write("✔️ 1 minute over!")
